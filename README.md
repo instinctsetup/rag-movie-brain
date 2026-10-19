@@ -2,6 +2,10 @@
 
 **Retrieval-augmented Q&A over 7,000 real Wikipedia movie plots - BM25 and TF-IDF written from scratch, answers quoted from evidence with citations.**
 
+- **Demo video**: https://drive.google.com/file/d/10b-FqJWCy7LV-aWWEtAnQWl5XZ4KbNk5/view
+- **Project report (PDF)**: https://drive.google.com/file/d/1jWLlmGNoTgHiVeBgfDn9NYOPad2B85Ht/view
+
+
 Ask "a hacker discovers reality is a computer simulation" and it retrieves the most relevant plots, extracts the most relevant sentence from each, and answers *only* with cited evidence. The retrieval math is the point of the project: both classic ranking functions are implemented line-by-line, with derivations in `docs/MATH.md`.
 
 ## Why this design (read: honest label)
