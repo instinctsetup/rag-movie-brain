@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rag-movie-brain - ask 7,000 movie plots anything</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>rag-movie-brain</h1>
+  <p class="sub">retrieval-augmented answers over 7,000 real Wikipedia movie plots - BM25 &amp; TF-IDF written from scratch</p>
+</header>
+
+<section class="ask">
+  <div class="row">
+    <input id="q" type="text" placeholder="e.g. a hacker discovers reality is a computer simulation">
+    <select id="method">
+      <option value="bm25">BM25</option>
+      <option value="tfidf">TF-IDF</option>
+    </select>
+    <button id="go">Ask</button>
+  </div>
+  <div class="hint">The answer is quoted evidence with citations - no external LLM, nothing invented.</div>
+</section>
+
+<section class="answer">
+  <h2>Grounded answer</h2>
+  <div id="answer" class="quiet">ask something above</div>
+</section>
+
+<section class="cites">
+  <h2>Retrieved evidence</h2>
+  <div id="citations"></div>
+</section>
+<script src="/static/app.js"></script>
+</body>
+</html>
