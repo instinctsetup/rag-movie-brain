@@ -13,5 +13,18 @@ def test_ask_returns_grounded_answer():
     data = r.json()
     assert r.status_code == 200
     assert data["citations"], "expected cited evidence"
-    titles = " ".join(x["title"] for x in data["citations"])
-    assert "Potter" in titles or "Worst Witch" in titles or True  # corpus is a sample
+    assert all(x["evidence"] for x in data["citations"]), "evidence should never be empty"
+
+
+def test_search_endpoint_returns_results():
+    r = c.post("/api/search", json={"question": "hacker computer simulation", "method": "bm25"})
+    assert r.status_code == 200
+    results = r.json()["results"]
+    assert results and all("title" in x and "plot" in x for x in results)
+
+
+def test_ask_with_only_stopwords_returns_no_match_message():
+    r = c.post("/api/ask", json={"question": "the of and", "method": "bm25"})
+    data = r.json()
+    assert data["citations"] == []
+    assert "No plot" in data["answer"]

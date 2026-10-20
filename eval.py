@@ -35,7 +35,6 @@ def main():
             hits += ok
             marks.setdefault(q, {})[method] = ok
         print(f"{method}: hit-rate@5 = {hits}/{len(answerable)} (answerable)")
-        lines[2] = lines[2]
     for q, _ in answerable:
         lines.append(f"| {q} | {'Y' if marks[q]['bm25'] else 'n'} | {'Y' if marks[q]['tfidf'] else 'n'} |")
     open("docs/eval-results.md", "w").write("\n".join(lines) + "\n")

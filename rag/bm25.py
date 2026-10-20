@@ -29,12 +29,13 @@ class BM25:
 
     def score(self, query_tokens: list[str], doc_id: int) -> float:
         dl = self.doc_len[doc_id] or 1
+        avgdl = self.avgdl or 1.0  # all-empty corpus would make avgdl 0
         total = 0.0
         for t in query_tokens:
             if t not in self.idf:
                 continue
             f = self.tf[doc_id].get(t, 0)
-            total += self.idf[t] * f * (self.k1 + 1) / (f + self.k1 * (1 - self.b + self.b * dl / self.avgdl))
+            total += self.idf[t] * f * (self.k1 + 1) / (f + self.k1 * (1 - self.b + self.b * dl / avgdl))
         return total
 
     def search(self, query_tokens: list[str], top_k: int = 5) -> list[tuple[int, float]]:

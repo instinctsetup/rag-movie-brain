@@ -7,7 +7,13 @@ from . import bm25, textutil, tfidf
 class MovieIndex:
     def __init__(self, path: str | None = None):
         path = path or str(Path(__file__).parent.parent / "data" / "plots.jsonl")
-        self.docs = [json.loads(line) for line in open(path)]
+        with open(path) as f:
+            self.docs = []
+            for i, line in enumerate(f, 1):
+                try:
+                    self.docs.append(json.loads(line))
+                except json.JSONDecodeError as e:
+                    raise ValueError(f"bad JSON at {path}:{i}") from e
         tokens = [textutil.tokenize(d["plot"] + " " + (d["title"] + " ") * 3) for d in self.docs]  # title boost
         self.bm25 = bm25.BM25(tokens)
         self.tfidf = tfidf.Tfidf(tokens)
@@ -26,11 +32,17 @@ class MovieIndex:
         q_terms = set(textutil.tokenize(query))
         citations = []
         for rank, hit in enumerate(hits, 1):
-            best, best_overlap = "", -1
-            for sent in textutil.sentences(hit["doc"]["plot"]):
-                overlap = len(q_terms & set(textutil.tokenize(sent)))
-                if overlap > best_overlap:
-                    best, best_overlap = sent, overlap
+            sents = textutil.sentences(hit["doc"]["plot"])
+            if not sents:
+                # every sentence filtered out (e.g. no sentence >=20 chars):
+                # fall back to the raw plot so evidence is never empty
+                best = hit["doc"]["plot"][:400]
+            else:
+                best, best_overlap = "", -1
+                for sent in sents:
+                    overlap = len(q_terms & set(textutil.tokenize(sent)))
+                    if overlap > best_overlap:
+                        best, best_overlap = sent, overlap
             citations.append({"n": rank, "title": hit["doc"]["title"],
                               "year": hit["doc"]["year"], "score": hit["score"],
                               "evidence": best[:400]})

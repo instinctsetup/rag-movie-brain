@@ -4,6 +4,10 @@ const go = document.getElementById('go');
 const answer = document.getElementById('answer');
 const citations = document.getElementById('citations');
 
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+}
+
 function highlight(text, query) {
   const terms = query.toLowerCase().split(/[^a-z0-9]+/).filter(t => t.length > 2);
   let out = text.replace(/&/g,'&amp;').replace(/</g,'&lt;');
@@ -23,7 +27,7 @@ go.onclick = async () => {
     for (const c of data.citations) {
       const div = document.createElement('div');
       div.className = 'cite';
-      div.innerHTML = `<div class="meta">[${c.n}] ${c.title} (${c.year})<span class="score">${c.method || ''} score ${c.score}</span></div>
+      div.innerHTML = `<div class="meta">[${c.n}] ${escapeHtml(c.title)} (${escapeHtml(c.year)})<span class="score">${c.method || ''} score ${c.score}</span></div>
                        <div>${highlight(c.evidence, q.value)}</div>`;
       citations.appendChild(div);
     }
